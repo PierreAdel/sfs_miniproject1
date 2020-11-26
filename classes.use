@@ -29,6 +29,8 @@ attributes
 productId: String
 title: String
 price: Integer
+operations
+changePrice(price: Integer)
 end
 
 class Order
@@ -47,7 +49,7 @@ User[1]
 Order[0..*]
 end
 
-association addRemoveFromCart between
+association manageCart between
 User[0..*] 
 Product[0..*]
 end
@@ -62,7 +64,7 @@ Admin[1]
 Order[0..*]
 end
 
-association contains between
+association contain between
 Order[*] 
 Product[1..10]
 end
@@ -70,12 +72,68 @@ end
  
 constraints
 
+context Product
+inv PersonAddress: 
+Product.allInstances.title->notEmpty()
+
 --order cant have more than 10 items or less than 1 item
 context Order
 inv max10inorder:
-    self.product-> size <= 10 and self.product-> size > 0
+   self.product-> size <= 10 and self.product-> size > 0
 
- -- total price of order must be the sum of inficiduval prices of each prodicut in the order
--- inv totalPrice:
- --   self.totalPrice->Iterate(p:Product; t:Integer=0 | t+s.price )
- 
+--User cannot have an empty address
+context Order
+inv User: 
+User.allInstances.address->notEmpty()
+
+--User Cannot have more than 5 products in their cart
+context User
+inv ProductsNumberLessThanFive : self.cart->size < 5
+
+--User Cannot make more than one order
+inv UserOrderslessthan2: self.product->size<2
+
+--System must have only one admin
+ context Admin
+inv oneadmin: Admin.allInstances->size=1
+--6Number of users must be more than one and has no limit
+ context User
+inv Usersmorethan0: User.allInstances->size>0
+
+--7.	Product price must be more than 1
+context Product
+inv positiveprice:self.price>1
+
+--8.	Cannot change product price to zero
+
+context Product::changePrice(price:Integer)
+pre: self.price>0 
+
+post: self.price>0 and self.price<>self.price@pre
+
+--9.	A user can only remove an product from his/her if it exists
+context User::removeFromCart(product:Product)
+pre: self.cart->size>0 
+
+post: self.cart->size=self.cart@pre->size-1
+
+
+--10.	Admin can not add more than one product with the same id
+context Admin::createProduct(productId:String,title:String,price:Integer)
+pre: Product.allInstances->excludes(productId)
+
+post: Product.allInstances->includes(productId)
+
+--11.	The total price of an order must be at least 1.
+context Order
+inv positiveprice: self.totalPrice>0 
+--12.	An order must contain at least one product.
+context Order
+inv positiveproducts:self.product->size<2
+--13.	Cannot change product price to zero
+
+context Order::changeStatus(status:String)
+pre: self.status<>null 
+
+post: self.status<>null and self.status<>self.status@pre
+

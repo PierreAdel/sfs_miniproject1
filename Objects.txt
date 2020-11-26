@@ -4,6 +4,12 @@
 !set user1.SSN := '1234566789'
 !set user1.cart := {}
 
+!create user2: User
+!set user1.fullName := 'Shehab'
+!set user1.address := 'london fourth floor'
+!set user1.SSN := '2345678910'
+!set user1.cart := {}
+
 !create admin1: Admin
 !set admin1.fullName := 'Shehab'
 !set admin1.address := 'london third floor'
@@ -29,3 +35,16 @@
 !set order1.orderId := 'o2'
 !set order1.totalPrice := 20
 !set order1.status := 'processing'
+
+!insert (order1,curtain) into contain
+!insert (order1,pen) into contain
+!insert (order2,pen) into contain
+!insert (user1,order1) into place
+!insert (user2,order2) into place
+!insert (admin1,order1) into approves
+!insert (admin1,order2) into approves
+!insert (admin1,pen) into manage
+!insert (admin1,curtain) into manage
+!insert (user1,curtain) into manageCart
+!insert (user1,pen) into manageCart
+!insert (user2,pen) into manageCart
