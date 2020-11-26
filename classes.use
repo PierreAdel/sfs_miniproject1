@@ -62,16 +62,20 @@ Admin[1]
 Order[0..*]
 end
 
+association contains between
+Order[*] 
+Product[1..10]
+end
 
---constarints -- feha errors lesa mesh maktoba sa7
-context User
-inv max10inCart:
-    cart-> size <=10
-    
-context User
-inv min0inCart:
-    cart-> size >=0
+ 
+constraints
 
-context User::removeFromCart(product: Product)
-pre prod: Product->includes(product)
-post prodpost: c->excludes(product)
+--order cant have more than 10 items or less than 1 item
+context Order
+inv max10inorder:
+    self.product-> size <= 10 and self.product-> size > 0
+
+ -- total price of order must be the sum of inficiduval prices of each prodicut in the order
+-- inv totalPrice:
+ --   self.totalPrice->Iterate(p:Product; t:Integer=0 | t+s.price )
+ 
