@@ -1,0 +1,77 @@
+model onlineShop
+ 
+class Person
+attributes
+fullName: String
+address: String
+SSN: String
+end
+
+
+class Admin < Person
+operations
+approveOrder(order: Order)
+createProduct(productId: String, title: String, price: Integer)
+removeProduct(productId: String)
+end
+
+class User < Person
+attributes
+cart: Bag(Product) -- Bag or set?
+operations
+addToCart(product: Product)
+removeFromCart(product: Product)
+end
+
+ 
+class Product
+attributes
+productId: String
+title: String
+price: Integer
+end
+
+class Order
+attributes
+orderId: String
+totalPrice: Integer
+status: String
+operations
+changeStatus(status: String)
+end
+
+
+--associations
+association place between
+User[1] 
+Order[0..*]
+end
+
+association addRemoveFromCart between
+User[0..*] 
+Product[0..*]
+end
+
+association manage between
+Admin[1] 
+Product[0..*]
+end
+
+association approves between
+Admin[1] 
+Order[0..*]
+end
+
+
+--constarints -- feha errors lesa mesh maktoba sa7
+context User
+inv max10inCart:
+    cart-> size <=10
+    
+context User
+inv min0inCart:
+    cart-> size >=0
+
+context User::removeFromCart(product: Product)
+pre prod: Product->includes(product)
+post prodpost: c->excludes(product)

@@ -1,0 +1,31 @@
+!create user1: User
+!set user1.fullName := 'Pierre'
+!set user1.address := 'london second floor'
+!set user1.SSN := '1234566789'
+!set user1.cart := {}
+
+!create admin1: Admin
+!set admin1.fullName := 'Shehab'
+!set admin1.address := 'london third floor'
+!set admin1.SSN := '987654321'
+
+
+!create curtain: Product
+!set curtain.productId := 'p1'
+!set curtain.title := 'Curtain'
+!set curtain.price := 20
+!create pen: Product
+
+!set curtain.productId := 'p2'
+!set curtain.title := 'Pen'
+!set curtain.price := 10
+ 
+!create order1: Order
+!set order1.orderId := 'o1'
+!set order1.totalPrice := 30
+!set order1.status := 'approved'
+
+!create order2: Order
+!set order1.orderId := 'o2'
+!set order1.totalPrice := 20
+!set order1.status := 'processing'
